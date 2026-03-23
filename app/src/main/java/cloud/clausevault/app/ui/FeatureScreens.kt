@@ -30,11 +30,9 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ExposedDropdownMenu
-import androidx.compose.material3.ExposedDropdownMenuBox
-import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -194,7 +192,6 @@ private val ContractTypes = listOf(
     "partnership" to "Partnership",
 )
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun GenerateScreen(api: ClauseVaultApi) {
     var type by remember { mutableStateOf(ContractTypes[0].first) }
@@ -213,18 +210,20 @@ fun GenerateScreen(api: ClauseVaultApi) {
             Text("Generate", style = MaterialTheme.typography.headlineMedium)
         }
         item {
-            ExposedDropdownMenuBox(expanded = expanded, onExpandedChange = { expanded = !expanded }) {
-                OutlinedTextField(
-                    value = ContractTypes.find { it.first == type }?.second ?: type,
-                    onValueChange = {},
-                    readOnly = true,
-                    label = { Text("Contract type") },
-                    trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
-                    modifier = Modifier.menuAnchor().fillMaxWidth(),
-                )
-                ExposedDropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
+            Text("Contract type", style = MaterialTheme.typography.labelMedium)
+            Box(Modifier.fillMaxWidth()) {
+                OutlinedButton(
+                    onClick = { expanded = true },
+                    modifier = Modifier.fillMaxWidth(),
+                ) {
+                    Text(ContractTypes.find { it.first == type }?.second ?: type)
+                }
+                DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
                     ContractTypes.forEach { (v, l) ->
-                        DropdownMenuItem(text = { Text(l) }, onClick = { type = v; expanded = false })
+                        DropdownMenuItem(
+                            text = { Text(l) },
+                            onClick = { type = v; expanded = false },
+                        )
                     }
                 }
             }
@@ -538,16 +537,12 @@ fun NegotiateScreen(api: ClauseVaultApi, nav: NavHostController) {
                 return@Column
             }
             var exp by remember { mutableStateOf(false) }
-            ExposedDropdownMenuBox(expanded = exp, onExpandedChange = { exp = !exp }) {
-                OutlinedTextField(
-                    contracts.find { it.id == selected }?.title ?: "",
-                    {},
-                    readOnly = true,
-                    label = { Text("Contract") },
-                    trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = exp) },
-                    modifier = Modifier.menuAnchor().fillMaxWidth(),
-                )
-                ExposedDropdownMenu(expanded = exp, onDismissRequest = { exp = false }) {
+            Text("Contract", style = MaterialTheme.typography.labelMedium)
+            Box(Modifier.fillMaxWidth()) {
+                OutlinedButton(onClick = { exp = true }, modifier = Modifier.fillMaxWidth()) {
+                    Text(contracts.find { it.id == selected }?.title ?: "Select", maxLines = 2)
+                }
+                DropdownMenu(expanded = exp, onDismissRequest = { exp = false }) {
                     contracts.forEach { c ->
                         DropdownMenuItem(
                             text = { Text(c.title, maxLines = 2) },
@@ -735,16 +730,12 @@ fun SettingsScreen(api: ClauseVaultApi, nav: NavHostController) {
             if (loading) CircularProgressIndicator()
             Text("Plan: $plan", style = MaterialTheme.typography.labelMedium)
             var exp by remember { mutableStateOf(false) }
-            ExposedDropdownMenuBox(expanded = exp, onExpandedChange = { exp = !exp }) {
-                OutlinedTextField(
-                    provider,
-                    {},
-                    readOnly = true,
-                    label = { Text("AI provider") },
-                    trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = exp) },
-                    modifier = Modifier.menuAnchor().fillMaxWidth(),
-                )
-                ExposedDropdownMenu(expanded = exp, onDismissRequest = { exp = false }) {
+            Text("AI provider", style = MaterialTheme.typography.labelMedium)
+            Box(Modifier.fillMaxWidth()) {
+                OutlinedButton(onClick = { exp = true }, modifier = Modifier.fillMaxWidth()) {
+                    Text(provider)
+                }
+                DropdownMenu(expanded = exp, onDismissRequest = { exp = false }) {
                     listOf("gemini", "ollama", "anthropic").forEach { p ->
                         DropdownMenuItem(
                             text = { Text(p) },

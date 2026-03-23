@@ -2,6 +2,7 @@ package cloud.clausevault.app.data
 
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import kotlinx.serialization.builtins.serializer
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import okhttp3.MediaType.Companion.toMediaType
@@ -116,6 +117,7 @@ class ClauseVaultApi(
         val parties =
             if (party1.isNotBlank() || party2.isNotBlank()) GenerateParties(party1, party2) else null
         val payload = json.encodeToString(
+            GenerateRequestBody.serializer(),
             GenerateRequestBody(contractType = contractType, prompt = prompt, parties = parties),
         )
         val req = authorizedBuilder()
@@ -166,7 +168,7 @@ class ClauseVaultApi(
         runCatching {
             val rulesPart = rulesJson.ifBlank { "[]" }
             val payload =
-                """{"name":${json.encodeToString(name)},"description":${json.encodeToString(description)},"category":${json.encodeToString(category)},"rules":$rulesPart}"""
+                """{"name":${json.encodeToString(String.serializer(), name)},"description":${json.encodeToString(String.serializer(), description)},"category":${json.encodeToString(String.serializer(), category)},"rules":$rulesPart}"""
             val req = authorizedBuilder()
                 .url("$base/api/playbooks")
                 .post(payload.toRequestBody(jsonMedia))
@@ -230,7 +232,7 @@ class ClauseVaultApi(
     }
 
     suspend fun saveSettings(body: SettingsPutBody): Result<Unit> = runCatching {
-        val payload = json.encodeToString(body)
+        val payload = json.encodeToString(SettingsPutBody.serializer(), body)
         val req = authorizedBuilder()
             .url("$base/api/settings")
             .put(payload.toRequestBody(jsonMedia))
@@ -256,7 +258,7 @@ class ClauseVaultApi(
 
     suspend fun exportDraftDocx(draft: String, title: String): Result<ByteArray> = runCatching {
         val payload =
-            """{"draft":${json.encodeToString(draft)},"title":${json.encodeToString(title)}}"""
+            """{"draft":${json.encodeToString(String.serializer(), draft)},"title":${json.encodeToString(String.serializer(), title)}}"""
         val req = authorizedBuilder()
             .url("$base/api/export")
             .post(payload.toRequestBody(jsonMedia))

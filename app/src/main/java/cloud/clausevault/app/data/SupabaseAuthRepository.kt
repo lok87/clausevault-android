@@ -6,7 +6,6 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.decodeFromJsonElement
-import kotlinx.serialization.json.parseToJsonElement
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
 import okhttp3.MediaType.Companion.toMediaType
@@ -64,7 +63,7 @@ class SupabaseAuthRepository(
 
     suspend fun signInWithPassword(email: String, password: String): Result<Unit> = withContext(Dispatchers.IO) {
         runCatching {
-            val body = json.encodeToString(PasswordTokenBody(email.trim(), password))
+            val body = json.encodeToString(PasswordTokenBody.serializer(), PasswordTokenBody(email.trim(), password))
             val req = Request.Builder()
                 .url("$base/auth/v1/token?grant_type=password")
                 .post(body.toRequestBody(jsonMedia))
@@ -84,7 +83,7 @@ class SupabaseAuthRepository(
 
     suspend fun signUp(email: String, password: String): Result<Boolean> = withContext(Dispatchers.IO) {
         runCatching {
-            val body = json.encodeToString(SignUpBody(email.trim(), password))
+            val body = json.encodeToString(SignUpBody.serializer(), SignUpBody(email.trim(), password))
             val req = Request.Builder()
                 .url("$base/auth/v1/signup")
                 .post(body.toRequestBody(jsonMedia))
@@ -112,7 +111,7 @@ class SupabaseAuthRepository(
 
     suspend fun sendMagicLink(email: String): Result<Unit> = withContext(Dispatchers.IO) {
         runCatching {
-            val body = json.encodeToString(OtpBody(email.trim()))
+            val body = json.encodeToString(OtpBody.serializer(), OtpBody(email.trim()))
             val req = Request.Builder()
                 .url("$base/auth/v1/otp")
                 .post(body.toRequestBody(jsonMedia))
@@ -131,7 +130,7 @@ class SupabaseAuthRepository(
     suspend fun refreshAccessToken(): Boolean = withContext(Dispatchers.IO) {
         val rt = tokens.getRefreshToken() ?: return@withContext false
         runCatching {
-            val body = json.encodeToString(RefreshBody(rt))
+            val body = json.encodeToString(RefreshBody.serializer(), RefreshBody(rt))
             val req = Request.Builder()
                 .url("$base/auth/v1/token?grant_type=refresh_token")
                 .post(body.toRequestBody(jsonMedia))
