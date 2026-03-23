@@ -1,21 +1,27 @@
-# ClauseVault — Android app
+# ClauseVault — Android
 
-Native **Jetpack Compose** client for [ClauseVault](https://github.com/topics/clausevault) (contract upload, AI review, generate, negotiate, playbooks, analytics, billing, on-prem deploy package).
+Installable **APK** for [ClauseVault](https://clausevault.cloud/) — same cloud backend as the website (upload, AI review, generate, negotiate, playbooks, analytics, billing, on‑prem package download).
 
-## Download
+## Download (no setup)
 
-- **Source:** `git clone https://github.com/lok87/clausevault-android.git`
-- **Debug APK:** build with `./gradlew assembleDebug` (output: `app/build/outputs/apk/debug/app-debug.apk`), or add the included `.github/workflows/android-build.yml` in a follow-up commit after granting GitHub token **workflow** scope (`gh auth refresh -s workflow`) so Actions can produce an artifact.
+1. Open **[Actions](https://github.com/lok87/clausevault-android/actions)** → select the latest successful **“Build release APK”** run.
+2. Under **Artifacts**, download **ClauseVault-apk** (ZIP) and extract **`ClauseVault.apk`**.
+3. On your phone: allow install from your file manager / browser if prompted (“unknown sources”), then open the APK.
 
-## Configure
+No `local.properties`, env files, or API keys — production URL and Supabase **anon** client (same as the public website) are embedded at build time.
 
-1. Copy `local.properties.example` to `local.properties`.
-2. Set `clausevault.apiUrl` (your Next.js app URL, no trailing slash), `supabase.url`, and `supabase.anonKey`.
+Sign in with **email + password** like on the web. Magic links still complete in the **browser** (same as clicking the email link on desktop); use password in the app, or finish link in browser then use the app after signing in on web if needed.
+
+Billing / Stripe opens the **browser** (same as the web app).
+
+## Self‑host / fork
+
+To point the app at **your** deployment, copy `local.properties.example` → `local.properties` and set `clausevault.apiUrl`, `supabase.url`, and `supabase.anonKey`, then rebuild (`./gradlew assembleRelease`).
 
 ## Build locally
 
-- **JDK 17** + [Android Studio](https://developer.android.com/studio) (or Android SDK + `./gradlew assembleDebug`).
+JDK 17 + Android SDK (or Android Studio): `./gradlew assembleRelease` → `app/build/outputs/apk/release/app-release.apk`.
 
 ## Backend
 
-The API must accept `Authorization: Bearer <Supabase access_token>` (supported in the ClauseVault Next.js API routes).
+Uses `Authorization: Bearer <Supabase access_token>` against your ClauseVault Next.js API (supported on the server routes).
