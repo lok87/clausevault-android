@@ -4,8 +4,8 @@ Native **Jetpack Compose** client for [ClauseVault](https://github.com/topics/cl
 
 ## Download
 
-- **Source:** clone this repository.
-- **Debug APK (no install from Play):** open **Actions** → latest workflow run → **Artifacts** → download `app-debug` (ZIP contains `app-debug.apk`). Enable on device: *Settings → Security → Install unknown apps* for your browser/files app.
+- **Source:** `git clone https://github.com/lok87/clausevault-android.git`
+- **Debug APK:** build with `./gradlew assembleDebug` (output: `app/build/outputs/apk/debug/app-debug.apk`), or add the included `.github/workflows/android-build.yml` in a follow-up commit after granting GitHub token **workflow** scope (`gh auth refresh -s workflow`) so Actions can produce an artifact.
 
 ## Configure
 
