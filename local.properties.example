@@ -1,0 +1,7 @@
+# Copy to local.properties in this folder (Android Studio may create it for you).
+# clausevault.apiUrl = your Next.js app origin (no trailing slash)
+clausevault.apiUrl=https://clausevault.cloud
+# supabase.url = project URL from Supabase dashboard
+supabase.url=https://YOUR_PROJECT.supabase.co
+# supabase.anonKey = anon public key (safe in client apps)
+supabase.anonKey=YOUR_SUPABASE_ANON_KEY
